@@ -2,7 +2,7 @@ const translations={"en": {"nav1": "Expertise", "nav2": "Approach", "nav3": "Abo
 function setLanguage(lang) {
  if (!translations[lang]) return;
  document.documentElement.lang=lang;
- document.querySelectorAll('[data-i18n]').forEach(el=>{el.innerHTML=translations[lang][el.dataset.i18n];});
+ document.querySelectorAll('[data-i18n]').forEach(el=>{const value=translations[lang][el.dataset.i18n]; if (typeof value==='string') el.innerHTML=value;});
  document.querySelectorAll('[data-lang]').forEach(el=>el.setAttribute('aria-pressed',String(el.dataset.lang===lang)));
  document.querySelector('nav').setAttribute('aria-label',lang==='el'?'Κύρια πλοήγηση':'Main navigation');
  document.querySelector('.languages').setAttribute('aria-label',lang==='el'?'Γλώσσα':'Language');

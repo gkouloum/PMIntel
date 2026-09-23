@@ -12,3 +12,15 @@ function setLanguage(lang) {
 }
 document.querySelectorAll('[data-lang]').forEach(button=>button.addEventListener('click',()=>setLanguage(button.dataset.lang)));
 try {setLanguage(localStorage.getItem('pmintel-language')||'en');} catch(e) {setLanguage('en');}
+
+// Decorative motion never blocks the content.
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)');
+const progress=document.createElement('div');progress.className='progress';progress.setAttribute('aria-hidden','true');document.body.append(progress);
+function updateProgress(){const length=document.documentElement.scrollHeight-innerHeight;progress.style.transform='scaleX('+(length>0?scrollY/length:0)+')';}
+addEventListener('scroll',updateProgress,{passive:true});addEventListener('resize',updateProgress);updateProgress();
+if(!reducedMotion.matches && 'IntersectionObserver' in window){
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.remove('pending');observer.unobserve(entry.target);}}),{threshold:.08});
+ document.querySelectorAll('.service,.about>div,.experience').forEach(el=>{el.classList.add('reveal');if(el.getBoundingClientRect().top>innerHeight){el.classList.add('pending');observer.observe(el);}});
+ const steps=[...document.querySelectorAll('.steps article')];let active=0;steps[0].classList.add('active');
+ setInterval(()=>{if(document.hidden || reducedMotion.matches)return;steps[active].classList.remove('active');active=(active+1)%steps.length;steps[active].classList.add('active');},2600);
+}
